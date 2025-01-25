@@ -1,36 +1,34 @@
-// Estado do chat
-let conversas = [];
-let conversaAtual = null;
-let abortController = null;
+window.conversas = [];
+window.conversaAtual = null;
+window.abortController = null;
 
-export function iniciarChat(welcomeScreen, chatContainer, inputContainer) {
+window.iniciarChat = function(welcomeScreen, chatContainer, inputContainer) {
     welcomeScreen.style.display = 'none';
     chatContainer.style.display = 'block';
     inputContainer.style.display = 'block';
     chatContainer.innerHTML = '';
 }
 
-export function mostrarTelaInicial(welcomeScreen, chatContainer, inputContainer, welcomeInput, chatInput) {
+window.mostrarTelaInicial = function(welcomeScreen, chatContainer, inputContainer, welcomeInput, chatInput) {
     welcomeScreen.style.display = 'flex';
     chatContainer.style.display = 'none';
     inputContainer.style.display = 'none';
     welcomeInput.value = '';
     chatInput.value = '';
-    conversaAtual = null;
+    window.conversaAtual = null;
 }
 
-// Função para escapar caracteres HTML
-export function escapeHTML(text) {
+window.escapeHTML = function(text) {
     const div = document.createElement('div');
     div.innerText = text;
     return div.innerHTML;
 }
 
-export function adicionarMensagem(chatContainer, texto, tipo) {
+window.adicionarMensagem = function(chatContainer, texto, tipo) {
     const mensagemDiv = document.createElement('div');
     mensagemDiv.className = `message ${tipo}`;
     mensagemDiv.innerHTML = `
-        <p>${escapeHTML(texto).replace(/\n/g, '<br>')}</p>
+        <p>${window.escapeHTML(texto).replace(/\n/g, '<br>')}</p>
         <div class="message-actions">
             <button class="action-btn" onclick="copiarMensagem(this)">
                 <i class="fas fa-copy"></i>
@@ -46,7 +44,7 @@ export function adicionarMensagem(chatContainer, texto, tipo) {
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
-export function mostrarCarregamento(chatContainer) {
+window.mostrarCarregamento = function(chatContainer) {
     const loadingDiv = document.createElement('div');
     loadingDiv.className = 'loading message assistant';
     loadingDiv.innerHTML = `
@@ -59,24 +57,24 @@ export function mostrarCarregamento(chatContainer) {
     return loadingDiv;
 }
 
-export async function enviarMensagem(mensagem, input, chatContainer, sendBtn, stopBtn) {
+window.enviarMensagem = async function(mensagem, input, chatContainer, sendBtn, stopBtn) {
     if (!mensagem.trim()) return;
 
-    if (!conversaAtual) {
+    if (!window.conversaAtual) {
         iniciarChat(document.querySelector('.welcome-screen'), chatContainer, document.querySelector('.input-container'));
-        conversaAtual = {
+        window.conversaAtual = {
             id: Date.now(),
             titulo: mensagem.slice(0, 30) + (mensagem.length > 30 ? '...' : ''),
             mensagens: []
         };
-        conversas.push(conversaAtual);
+        window.conversas.push(window.conversaAtual);
         atualizarListaConversas(document.querySelector('.chat-list'));
     }
 
     input.value = '';
     input.style.height = 'auto';
     adicionarMensagem(chatContainer, mensagem, 'user');
-    conversaAtual.mensagens.push({ tipo: 'user', conteudo: mensagem });
+    window.conversaAtual.mensagens.push({ tipo: 'user', conteudo: mensagem });
 
     const loadingDiv = mostrarCarregamento(chatContainer);
     let accumulatedMessage = '';
@@ -84,7 +82,7 @@ export async function enviarMensagem(mensagem, input, chatContainer, sendBtn, st
     sendBtn.style.display = 'none';
     stopBtn.style.display = 'inline';
 
-    abortController = new AbortController();
+    window.abortController = new AbortController();
 
     try {
         const response = await fetch('/send_message', {
@@ -94,9 +92,9 @@ export async function enviarMensagem(mensagem, input, chatContainer, sendBtn, st
             },
             body: JSON.stringify({
                 message: mensagem,
-                conversation_id: conversaAtual.id
+                conversation_id: window.conversaAtual.id
             }),
-            signal: abortController.signal
+            signal: window.abortController.signal
         });
 
         if (response.ok && response.body) {
@@ -128,7 +126,7 @@ export async function enviarMensagem(mensagem, input, chatContainer, sendBtn, st
 
             loadingDiv.remove();
             adicionarMensagem(chatContainer, accumulatedMessage, 'assistant');
-            conversaAtual.mensagens.push({ tipo: 'assistant', conteudo: accumulatedMessage });
+            window.conversaAtual.mensagens.push({ tipo: 'assistant', conteudo: accumulatedMessage });
         } else {
             throw new Error('Resposta inválida do servidor');
         }
@@ -136,31 +134,31 @@ export async function enviarMensagem(mensagem, input, chatContainer, sendBtn, st
         if (erro.name === 'AbortError') {
             console.log('Geração de resposta interrompida pelo usuário.');
             adicionarMensagem(chatContainer, accumulatedMessage, 'assistant');
-            conversaAtual.mensagens.push({ tipo: 'assistant', conteudo: accumulatedMessage });
+            window.conversaAtual.mensagens.push({ tipo: 'assistant', conteudo: accumulatedMessage });
         } else {
             const mensagemErro = 'Erro ao conectar com o servidor. Verifique se o servidor está rodando.';
             adicionarMensagem(chatContainer, mensagemErro, 'assistant');
-            conversaAtual.mensagens.push({ tipo: 'assistant', conteudo: mensagemErro });
+            window.conversaAtual.mensagens.push({ tipo: 'assistant', conteudo: mensagemErro });
             console.error('Erro:', erro);
         }
     } finally {
         sendBtn.style.display = 'inline';
         stopBtn.style.display = 'none';
-        abortController = null;
+        window.abortController = null;
     }
 }
 
-export function interromperResposta() {
-    if (abortController) {
-        abortController.abort();
+window.interromperResposta = function() {
+    if (window.abortController) {
+        window.abortController.abort();
     }
 }
 
-export function carregarConversa(id) {
-    const conversa = conversas.find(c => c.id === id);
+window.carregarConversa = function(id) {
+    const conversa = window.conversas.find(c => c.id === id);
     if (!conversa) return;
 
-    conversaAtual = conversa;
+    window.conversaAtual = conversa;
     const chatContainer = document.querySelector('.chat-container');
     iniciarChat(document.querySelector('.welcome-screen'), chatContainer, document.querySelector('.input-container'));
 
@@ -171,9 +169,9 @@ export function carregarConversa(id) {
     });
 }
 
-export function atualizarListaConversas(chatList) {
+window.atualizarListaConversas = function(chatList) {
     chatList.innerHTML = '';
-    conversas.forEach(conversa => {
+    window.conversas.forEach(conversa => {
         const conversaElement = document.createElement('div');
         conversaElement.className = 'chat-item';
         conversaElement.onclick = () => carregarConversa(conversa.id);
@@ -192,7 +190,7 @@ export function atualizarListaConversas(chatList) {
     });
 }
 
-export function copiarMensagem(button) {
+window.copiarMensagem = function(button) {
     const mensagem = button.closest('.message').textContent.trim();
     navigator.clipboard.writeText(mensagem);
     
@@ -203,21 +201,21 @@ export function copiarMensagem(button) {
     }, 1000);
 }
 
-export function regenerarResposta(button) {
+window.regenerarResposta = function(button) {
     const mensagemElement = button.closest('.message');
     const mensagemAnterior = mensagemElement.previousElementSibling;
     if (mensagemAnterior && mensagemAnterior.classList.contains('user')) {
         const mensagemUsuario = mensagemAnterior.textContent.trim();
         mensagemElement.remove();
-        if (conversaAtual) {
-            conversaAtual.mensagens.pop();
+        if (window.conversaAtual) {
+            window.conversaAtual.mensagens.pop();
         }
         enviarMensagem(mensagemUsuario, document.querySelector('#chat-input'), document.querySelector('.chat-container'), document.querySelector('#send-btn'), document.querySelector('#stop-btn'));
     }
 }
 
-export function renomearConversa(id) {
-    const conversa = conversas.find(c => c.id === id);
+window.renomearConversa = function(id) {
+    const conversa = window.conversas.find(c => c.id === id);
     if (!conversa) return;
 
     const novoTitulo = prompt('Digite o novo título da conversa:', conversa.titulo);
@@ -227,10 +225,10 @@ export function renomearConversa(id) {
     }
 }
 
-export function excluirConversa(id) {
+window.excluirConversa = function(id) {
     if (confirm('Tem certeza que deseja excluir esta conversa?')) {
-        conversas = conversas.filter(c => c.id !== id);
-        if (conversaAtual && conversaAtual.id === id) {
+        window.conversas = window.conversas.filter(c => c.id !== id);
+        if (window.conversaAtual && window.conversaAtual.id === id) {
             mostrarTelaInicial(
                 document.querySelector('.welcome-screen'),
                 document.querySelector('.chat-container'),
