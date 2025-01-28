@@ -1,0 +1,58 @@
+.new-chat-btn {
+    background-color: #19c37d;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    transition: background-color 0.2s;
+}
+
+.new-chat-btn:hover {
+    background-color: #15a76c;
+}
+
+.settings-btn {
+    margin-top: auto;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    background-color: transparent;
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background-color 0.2s;
+    width: 100%;
+}
+
+.settings-btn:hover {
+    background-color: var(--action-hover);
+}
+
+.send-btn, .stop-btn {
+    position: absolute;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.send-btn:hover, .stop-btn:hover {
+    background-color: var(--action-hover);
+}
