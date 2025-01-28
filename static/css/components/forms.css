@@ -34,6 +34,12 @@
     min-height: 56px;
     max-height: 200px;
     line-height: 1.5;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.input-box textarea::-webkit-scrollbar {
+    display: none;
 }
 
 .input-box .send-btn,
@@ -48,9 +54,33 @@
     padding: 0.5rem;
     border-radius: 4px;
     transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .input-box .send-btn:hover,
 .input-box .stop-btn:hover {
     background-color: var(--action-hover);
+}
+
+.input-box .stop-btn {
+    right: 5rem;
+    bottom: 0.5rem;
+}
+
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    width: 100%;
+    max-width: 600px;
+}
+
+.model-select {
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-bg);
+    color: var(--text-primary);
 }
