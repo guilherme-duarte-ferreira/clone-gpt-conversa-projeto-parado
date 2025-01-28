@@ -5,7 +5,7 @@ import requests
 from utils.text_processor import split_text
 from utils.chat_history import save_conversation, get_conversation_history
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 app.secret_key = 'sua_chave_secreta_aqui'
 
 API_URL = "http://localhost:11434/v1/chat/completions"

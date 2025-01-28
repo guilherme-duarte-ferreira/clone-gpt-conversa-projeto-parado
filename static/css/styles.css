@@ -1,17 +1,17 @@
 /* Reset e variáveis base */
-@import url('./base/reset.css');
-@import url('./base/variables.css');
-@import url('./base/typography.css');
+@import './base/variables.css';
+@import './base/reset.css';
+@import './base/typography.css';
 
 /* Layouts principais */
-@import url('./layout/container.css');
-@import url('./layout/sidebar.css');
-@import url('./layout/main-content.css');
+@import './layout/container.css';
+@import './layout/sidebar.css';
+@import './layout/main-content.css';
 
 /* Componentes */
-@import url('./components/buttons.css');
-@import url('./components/forms.css');
+@import './components/buttons.css';
+@import './components/forms.css';
 
 /* Temas */
-@import url('./themes/light-theme.css');
-@import url('./themes/dark-theme.css');
+@import './themes/light-theme.css';
+@import './themes/dark-theme.css';
