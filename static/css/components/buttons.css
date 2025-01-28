@@ -33,3 +33,20 @@
 .settings-btn:hover {
     background-color: var(--action-hover);
 }
+
+.theme-toggle, .header-sidebar-toggle {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--action-hover);
+    border: none;
+    border-radius: 4px;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.theme-toggle:hover, .header-sidebar-toggle:hover {
+    background: var(--action-selected);
+}

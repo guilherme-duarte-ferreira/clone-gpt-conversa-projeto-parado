@@ -1,17 +1,17 @@
-/* Base */
+/* Reset e variáveis base */
 @import url('./base/reset.css');
 @import url('./base/variables.css');
 @import url('./base/typography.css');
 
-/* Layout */
+/* Layouts principais */
 @import url('./layout/container.css');
 @import url('./layout/sidebar.css');
 @import url('./layout/main-content.css');
 
-/* Components */
+/* Componentes */
 @import url('./components/buttons.css');
 @import url('./components/forms.css');
 
-/* Themes */
+/* Temas */
 @import url('./themes/light-theme.css');
 @import url('./themes/dark-theme.css');

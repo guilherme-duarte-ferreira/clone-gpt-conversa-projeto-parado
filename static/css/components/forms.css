@@ -35,3 +35,22 @@
     max-height: 200px;
     line-height: 1.5;
 }
+
+.input-box .send-btn,
+.input-box .stop-btn {
+    position: absolute;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.input-box .send-btn:hover,
+.input-box .stop-btn:hover {
+    background-color: var(--action-hover);
+}

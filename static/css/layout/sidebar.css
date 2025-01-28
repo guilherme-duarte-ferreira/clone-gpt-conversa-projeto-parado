@@ -14,3 +14,23 @@
 .sidebar.collapsed {
     transform: translateX(-260px);
 }
+
+.chat-list {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--text-disabled) transparent;
+}
+
+.chat-list::-webkit-scrollbar {
+    width: 5px;
+}
+
+.chat-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.chat-list::-webkit-scrollbar-thumb {
+    background-color: var(--text-disabled);
+    border-radius: 20px;
+}
