@@ -86,4 +86,3 @@ def save_conversation(message, response, conversation_id=None):
     except Exception as e:
         print(f"Erro ao salvar conversa: {str(e)}")
         return None
- 
