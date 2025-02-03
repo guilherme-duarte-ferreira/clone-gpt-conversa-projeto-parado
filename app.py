@@ -10,14 +10,14 @@ from backend.routers.chats import chats_bp
 app = Flask(__name__, static_folder='static')
 app.secret_key = 'sua_chave_secreta_aqui'
 
+# Inicializa o banco de dados
+init_db()
+
 # Registra o blueprint das rotas de chat
 app.register_blueprint(chats_bp, url_prefix='/api/chats')
 
 API_URL = "http://localhost:11434/v1/chat/completions"
 MODEL_NAME = "gemma2:2b"
-
-# Inicializa o banco de dados
-init_db()
 
 @app.route('/')
 def home():

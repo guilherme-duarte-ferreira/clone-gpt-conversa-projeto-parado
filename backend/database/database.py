@@ -31,6 +31,7 @@ def init_db():
                 FOREIGN KEY (conversation_id) REFERENCES conversations (id)
             )
         ''')
+        db.commit()  # Garante que as tabelas sejam criadas
 
 @contextmanager
 def get_db():
