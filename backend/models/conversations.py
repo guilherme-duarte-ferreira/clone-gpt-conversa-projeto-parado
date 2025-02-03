@@ -15,7 +15,7 @@ class Conversation:
                 'INSERT INTO conversations (id, title, timestamp, meta) VALUES (?, ?, ?, ?)',
                 (conversation_id, title, timestamp, '{}')
             )
-            db.commit()  # Garante que a conversa seja salva
+            db.commit()
         return conversation_id
 
     @staticmethod
@@ -58,7 +58,7 @@ class Conversation:
         
         with get_db() as db:
             db.execute(query, params)
-            db.commit()  # Garante que as alterações sejam salvas
+            db.commit()
             return True
 
     @staticmethod
@@ -67,5 +67,5 @@ class Conversation:
         with get_db() as db:
             db.execute('DELETE FROM messages WHERE conversation_id = ?', (conversation_id,))
             db.execute('DELETE FROM conversations WHERE id = ?', (conversation_id,))
-            db.commit()  # Garante que a deleção seja efetivada
+            db.commit()
             return True

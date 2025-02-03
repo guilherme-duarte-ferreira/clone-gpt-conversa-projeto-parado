@@ -29,9 +29,10 @@ def init_db():
                 content TEXT NOT NULL,
                 timestamp TEXT NOT NULL,
                 FOREIGN KEY (conversation_id) REFERENCES conversations (id)
+                ON DELETE CASCADE
             )
         ''')
-        db.commit()  # Garante que as tabelas sejam criadas
+        db.commit()
 
 @contextmanager
 def get_db():
@@ -41,6 +42,5 @@ def get_db():
     conn.row_factory = sqlite3.Row
     try:
         yield conn
-        conn.commit()  # Commit automático ao final do contexto
     finally:
         conn.close()

@@ -14,7 +14,7 @@ class Message:
                 'INSERT INTO messages (id, conversation_id, role, content, timestamp) VALUES (?, ?, ?, ?, ?)',
                 (message_id, conversation_id, role, content, timestamp)
             )
-            db.commit()  # Garante que a mensagem seja salva
+            db.commit()
         return message_id
 
     @staticmethod
