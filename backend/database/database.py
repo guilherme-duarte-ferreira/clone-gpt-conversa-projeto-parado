@@ -40,6 +40,6 @@ def get_db():
     conn.row_factory = sqlite3.Row
     try:
         yield conn
-        conn.commit()
+        conn.commit()  # Commit automático ao final do contexto
     finally:
         conn.close()
