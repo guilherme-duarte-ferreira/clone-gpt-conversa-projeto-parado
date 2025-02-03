@@ -6,6 +6,7 @@ from backend.database.database import init_db
 from backend.utils.chat_history import save_conversation, get_conversation_history
 from backend.utils.text_processor import split_text
 from backend.routers.chats import chats_bp
+from backend.models.conversations import Conversation  # Importando o modelo de conversas
 
 app = Flask(__name__, static_folder='static')
 app.secret_key = 'sua_chave_secreta_aqui'
@@ -48,6 +49,8 @@ def send_message():
     response.headers['Cache-Control'] = 'no-cache'
 
     if final_response is not None:
+        if conversation_id is None:  # Verifica se o conversation_id é None
+            conversation_id = Conversation.create()  # Gera um novo conversation_id
         conversation_id = save_conversation(message, final_response, conversation_id)
 
     return response
