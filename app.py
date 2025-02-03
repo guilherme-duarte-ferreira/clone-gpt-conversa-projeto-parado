@@ -2,28 +2,27 @@ from flask import Flask, render_template, request, jsonify, Response
 import json
 from datetime import datetime
 import requests
-from utils.text_processor import split_text
-from utils.chat_history import save_conversation, get_conversation_history
+from backend.database.database import init_db
+from backend.utils.chat_history import save_conversation, get_conversation_history
+from backend.utils.text_processor import split_text
+from backend.routers.chats import chats_bp
 
 app = Flask(__name__, static_folder='static')
 app.secret_key = 'sua_chave_secreta_aqui'
 
+# Registra o blueprint das rotas de chat
+app.register_blueprint(chats_bp, url_prefix='/api/chats')
+
 API_URL = "http://localhost:11434/v1/chat/completions"
 MODEL_NAME = "gemma2:2b"
+
+# Inicializa o banco de dados
+init_db()
 
 @app.route('/')
 def home():
     conversations = get_conversation_history()
-    if not conversations:
-        conversations = []
     return render_template('index.html', conversations=conversations)
-
-@app.route('/get_conversation/<conversation_id>')
-def get_conversation(conversation_id):
-    conversation = get_conversation_by_id(conversation_id)
-    if conversation:
-        return jsonify(conversation)
-    return jsonify({'error': 'Conversa não encontrada'}), 404
 
 @app.route('/send_message', methods=['POST'])
 def send_message():
@@ -39,22 +38,17 @@ def send_message():
             responses.append(response)
         final_response = " ".join(responses)
     else:
-        final_response = None  # Streaming será usado para mensagens menores
+        final_response = None
 
     def generate_streamed_response():
         for part in process_with_ai_stream(message):
             yield f"data: {json.dumps({'content': part})}\n\n"
 
-    # Configura streaming para mensagens
     response = Response(generate_streamed_response(), content_type="text/event-stream")
     response.headers['Cache-Control'] = 'no-cache'
 
-    # Atualizar o histórico após streaming
     if final_response is not None:
-        if not conversation_id:
-            conversation_id = save_conversation(message, final_response)
-        else:
-            save_conversation(message, final_response, conversation_id)
+        conversation_id = save_conversation(message, final_response, conversation_id)
 
     return response
 
