@@ -29,10 +29,13 @@ Iniciamos a análise do problema revisando a estrutura do projeto e identificand
    - Inserimos uma mensagem de teste diretamente no banco de dados usando comandos SQL e confirmamos que a inserção estava funcionando.
 
 5. **Resultados**:
-   - A inserção manual de mensagens no banco de dados funcionou corretamente, mas a persistência através da interface do usuário foi inicialmente problemática.
-   - Após as alterações, a função de envio de mensagens foi configurada corretamente, permitindo que as mensagens fossem salvas no banco de dados.
+   - A inserção manual de mensagens no banco de dados não funcionou corretamente, e a persistência através da interface do usuário continua sendo problemática.
+   - Mesmo após as alterações, a função de envio de mensagens não foi configurada adequadamente, resultando na falha em salvar as mensagens no banco de dados.
 
 ## Próximos Passos
-- Continuar testando a aplicação, enviando mensagens pela interface e verificando se elas aparecem no banco de dados.
-- Monitorar os logs do servidor para identificar quaisquer erros que possam ocorrer durante o processamento das mensagens.
-- Considerar a implementação de testes automatizados para garantir que a funcionalidade de persistência continue funcionando conforme esperado em futuras alterações.
+- Continuar testando a aplicação, enviando mensagens pela interface e verificando SE elas aparecem no banco de dados.
+- Monitorar os logs do servidor para identificar quaisquer erros que possam ocorrer durante o processamento das mensagens, que ainda não estão sendo registrados corretamente.
+- Considerar a implementação de testes automatizados para garantir que a funcionalidade de persistência funcione conforme esperado em futuras alterações.
+
+## Conclusão
+Apesar dos desafios enfrentados, estamos comprometidos em resolver as questões de persistência no banco de dados. Com a continuidade dos testes e a análise dos logs, acreditamos que poderemos identificar e corrigir os problemas, garantindo que a funcionalidade de envio de mensagens funcione corretamente em breve. A implementação de testes automatizados também será uma prioridade para evitar recorrências e assegurar a estabilidade da aplicação.
