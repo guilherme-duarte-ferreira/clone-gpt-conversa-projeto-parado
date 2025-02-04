@@ -1,71 +1,65 @@
+from sqlalchemy import Column, String, DateTime, JSON
+from backend.database.database import Base
 from datetime import datetime
-import json
 import uuid
-from backend.database.database import get_db
 
-class Conversation:
+class Conversation(Base):
+    __tablename__ = "conversations"
+    
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    title = Column(String, nullable=False)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    meta = Column(JSON, default=dict)
+
     @staticmethod
     def create(title="Nova Conversa"):
         """Cria uma nova conversa"""
-        conversation_id = str(uuid.uuid4())
-        timestamp = datetime.now().isoformat()
+        from backend.database.database import SessionLocal
         
-        with get_db() as db:
-            db.execute(
-                'INSERT INTO conversations (id, title, timestamp, meta) VALUES (?, ?, ?, ?)',
-                (conversation_id, title, timestamp, '{}')
-            )
+        db = SessionLocal()
+        try:
+            conversation = Conversation(title=title)
+            db.add(conversation)
             db.commit()
-        return conversation_id
+            db.refresh(conversation)
+            return conversation.id
+        finally:
+            db.close()
 
     @staticmethod
     def get_all():
         """Retorna todas as conversas"""
-        with get_db() as db:
-            cursor = db.execute(
-                'SELECT * FROM conversations ORDER BY timestamp DESC'
-            )
-            return cursor.fetchall()
+        from backend.database.database import SessionLocal
+        
+        db = SessionLocal()
+        try:
+            return db.query(Conversation).order_by(Conversation.timestamp.desc()).all()
+        finally:
+            db.close()
 
     @staticmethod
     def get_by_id(conversation_id):
         """Busca uma conversa específica pelo ID"""
-        with get_db() as db:
-            cursor = db.execute(
-                'SELECT * FROM conversations WHERE id = ?',
-                (conversation_id,)
-            )
-            return cursor.fetchone()
-
-    @staticmethod
-    def update(conversation_id, title=None, meta=None):
-        """Atualiza uma conversa existente"""
-        updates = []
-        params = []
+        from backend.database.database import SessionLocal
         
-        if title is not None:
-            updates.append('title = ?')
-            params.append(title)
-        if meta is not None:
-            updates.append('meta = ?')
-            params.append(json.dumps(meta))
-            
-        if not updates:
-            return False
-            
-        query = f'UPDATE conversations SET {", ".join(updates)} WHERE id = ?'
-        params.append(conversation_id)
-        
-        with get_db() as db:
-            db.execute(query, params)
-            db.commit()
-            return True
+        db = SessionLocal()
+        try:
+            return db.query(Conversation).filter_by(id=conversation_id).first()
+        finally:
+            db.close()
 
     @staticmethod
     def delete(conversation_id):
         """Deleta uma conversa e suas mensagens"""
-        with get_db() as db:
-            db.execute('DELETE FROM messages WHERE conversation_id = ?', (conversation_id,))
-            db.execute('DELETE FROM conversations WHERE id = ?', (conversation_id,))
-            db.commit()
-            return True
+        from backend.database.database import SessionLocal
+        
+        db = SessionLocal()
+        try:
+            conversation = db.query(Conversation).filter_by(id=conversation_id).first()
+            if conversation:
+                db.delete(conversation)
+                db.commit()
+                return True
+            return False
+        finally:
+            db.close()

@@ -1,38 +1,49 @@
+from sqlalchemy import Column, String, DateTime, ForeignKey
+from sqlalchemy.orm import relationship
+from backend.database.database import Base
 from datetime import datetime
 import uuid
-from backend.database.database import get_db
 
-class Message:
+class Message(Base):
+    __tablename__ = "messages"
+    
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    conversation_id = Column(String, ForeignKey('conversations.id', ondelete='CASCADE'))
+    role = Column(String, nullable=False)
+    content = Column(String, nullable=False)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    
+    conversation = relationship("Conversation", backref="messages")
+
     @staticmethod
     def create(conversation_id, role, content):
         """Cria uma nova mensagem"""
-        message_id = str(uuid.uuid4())
-        timestamp = datetime.now().isoformat()
+        from backend.database.database import SessionLocal
         
-        with get_db() as db:
-            db.execute(
-                'INSERT INTO messages (id, conversation_id, role, content, timestamp) VALUES (?, ?, ?, ?, ?)',
-                (message_id, conversation_id, role, content, timestamp)
+        db = SessionLocal()
+        try:
+            message = Message(
+                conversation_id=conversation_id,
+                role=role,
+                content=content
             )
+            db.add(message)
             db.commit()
-        return message_id
+            db.refresh(message)
+            return message.id
+        finally:
+            db.close()
 
     @staticmethod
     def get_by_conversation(conversation_id):
         """Retorna todas as mensagens de uma conversa"""
-        with get_db() as db:
-            cursor = db.execute(
-                'SELECT * FROM messages WHERE conversation_id = ? ORDER BY timestamp ASC',
-                (conversation_id,)
-            )
-            return cursor.fetchall()
-
-    @staticmethod
-    def get_by_id(message_id):
-        """Busca uma mensagem específica pelo ID"""
-        with get_db() as db:
-            cursor = db.execute(
-                'SELECT * FROM messages WHERE id = ?',
-                (message_id,)
-            )
-            return cursor.fetchone()
+        from backend.database.database import SessionLocal
+        
+        db = SessionLocal()
+        try:
+            return db.query(Message)\
+                .filter_by(conversation_id=conversation_id)\
+                .order_by(Message.timestamp.asc())\
+                .all()
+        finally:
+            db.close()
